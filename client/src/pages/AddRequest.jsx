@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { createRequest } from "../api/requestApi";
-import { TextField, Button, Container, Typography, Box } from "@mui/material";
+import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 const AddRequest = () => {
   const navigate = useNavigate();
+  const { user } = useContext(AuthContext); // get logged-in user
 
   const [form, setForm] = useState({
     patientName: "",
@@ -21,30 +22,96 @@ const AddRequest = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await createRequest(form);
-      alert("Request added!");
+      // Prepare data according to schema
+      const requestData = {
+        ...form,
+        unitsRequired: Number(form.unitsRequired), // convert to number
+        requestedBy: user?.token ? user.id : null // include user ID if available
+      };
+
+      await createRequest(requestData);
+      alert("Blood request added successfully!");
       navigate("/requests");
     } catch (err) {
-      alert("Failed to add request");
+      console.error(err);
+      alert(err.response?.data?.message || "Failed to add request");
     }
   };
 
   return (
-    <Container maxWidth="sm" sx={{ mt: 5 }}>
-      <Typography variant="h4" align="center">Add Blood Request</Typography>
+    <main className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
+      <h1 className="text-2xl font-bold text-center mb-5">Add Blood Request</h1>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <label className="flex flex-col">
+          Patient Name
+          <input
+            type="text"
+            name="patientName"
+            value={form.patientName}
+            onChange={handleChange}
+            className="mt-1 p-2 border rounded"
+            required
+          />
+        </label>
 
-      <form onSubmit={handleSubmit}>
-        <TextField fullWidth label="Patient Name" name="patientName" margin="normal" onChange={handleChange} />
-        <TextField fullWidth label="Blood Group" name="bloodGroup" margin="normal" onChange={handleChange} />
-        <TextField fullWidth label="Units Required" name="unitsRequired" margin="normal" onChange={handleChange} />
-        <TextField fullWidth label="Hospital" name="hospital" margin="normal" onChange={handleChange} />
-        <TextField fullWidth label="City" name="city" margin="normal" onChange={handleChange} />
+        <label className="flex flex-col">
+          Blood Group
+          <input
+            type="text"
+            name="bloodGroup"
+            value={form.bloodGroup}
+            onChange={handleChange}
+            className="mt-1 p-2 border rounded"
+            placeholder="e.g., A+, O-"
+            required
+          />
+        </label>
 
-        <Button variant="contained" fullWidth type="submit" sx={{ mt: 3 }}>
-          Submit
-        </Button>
+        <label className="flex flex-col">
+          Units Required
+          <input
+            type="number"
+            name="unitsRequired"
+            value={form.unitsRequired}
+            onChange={handleChange}
+            className="mt-1 p-2 border rounded"
+            min="1"
+            required
+          />
+        </label>
+
+        <label className="flex flex-col">
+          Hospital
+          <input
+            type="text"
+            name="hospital"
+            value={form.hospital}
+            onChange={handleChange}
+            className="mt-1 p-2 border rounded"
+            required
+          />
+        </label>
+
+        <label className="flex flex-col">
+          City
+          <input
+            type="text"
+            name="city"
+            value={form.city}
+            onChange={handleChange}
+            className="mt-1 p-2 border rounded"
+            required
+          />
+        </label>
+
+        <button
+          type="submit"
+          className="mt-4 bg-red-600 hover:bg-red-700 text-white p-3 rounded font-semibold"
+        >
+          Submit Request
+        </button>
       </form>
-    </Container>
+    </main>
   );
 };
 
