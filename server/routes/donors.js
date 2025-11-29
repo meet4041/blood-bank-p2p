@@ -8,24 +8,18 @@ const {
   updateDonor,
   patchDonor,
   deleteDonor
-} = require('../controllers/donorController');
+} = require('../controllers/donorController'); 
 
-// Public - Get all donors
 router.get('/', getAllDonors);
 
-// Public - Get donor by ID
 router.get('/:id', getDonorById);
 
-// Protected - Create donor
 router.post('/', authMiddleware, createDonor);
 
-// Protected - Update donor (PUT)
 router.put('/:id', authMiddleware, updateDonor);
 
-// Protected - Patch donor
 router.patch('/:id', authMiddleware, patchDonor);
 
-// Protected - Delete donor
 router.delete('/:id', authMiddleware, deleteDonor);
 
 module.exports = router;

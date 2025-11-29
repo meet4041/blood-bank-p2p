@@ -9,7 +9,7 @@ const DonorSchema = new mongoose.Schema(
     city: { type: String },
     lastDonated: { type: Date },
     verified: { type: Boolean, default: false },
-    addedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }  
+    addedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
   },
   { timestamps: true }
 );

@@ -1,40 +1,27 @@
-import React, { useState, useContext, useEffect, useRef } from "react"; // Added useRef
+import React, { useState, useContext, useEffect, useRef } from "react";
 import { loginUser } from "../api/authApi";
-import { TextField, Button, Container, Typography, Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 
 const Login = () => {
   const navigate = useNavigate();
   const { token, login } = useContext(AuthContext);
-  
-  // 1. Requirement: Use useRef to access the DOM element directly
   const emailInputRef = useRef(null);
 
-  const [form, setForm] = useState({
-    email: "",
-    password: ""
-  });
+  const [form, setForm] = useState({ email: "", password: "" });
 
   useEffect(() => {
-    if (token) {
-      navigate("/dashboard");
-    }
-    // Auto-focus the email input field when component mounts
-    if (emailInputRef.current) {
-      emailInputRef.current.focus();
-    }
+    if (token) navigate("/dashboard");
+    if (emailInputRef.current) emailInputRef.current.focus();
   }, [token, navigate]);
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const res = await loginUser(form);
-      login(res.token); 
+      login(res.token);
       alert("Login successful!");
       navigate("/dashboard");
     } catch (err) {
@@ -43,38 +30,39 @@ const Login = () => {
   };
 
   return (
-    // 2. Requirement: Semantic Element (<section> instead of just Generic Box/Divs)
-    <section>
-      <Container maxWidth="sm">
-        <Box sx={{ mt: 5 }}>
-          <Typography variant="h4" align="center">Login</Typography>
-
-          <form onSubmit={handleSubmit}>
-            <TextField
-              fullWidth
-              label="Email"
-              name="email"
-              type="email"
-              margin="normal"
-              inputRef={emailInputRef} // Attach the ref here
-              onChange={handleChange}
-            />
-            <TextField
-              fullWidth
-              label="Password"
-              name="password"
-              type="password"
-              margin="normal"
-              onChange={handleChange}
-            />
-
-            <Button variant="contained" fullWidth type="submit" sx={{ mt: 3 }}>
-              Login
-            </Button>
+    <main>
+      <div className="max-w-md mx-auto px-4 mt-12">
+        <div className="bg-white p-6 rounded shadow">
+          <h2 className="text-2xl font-semibold text-center mb-4">Login</h2>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium">Email</label>
+              <input
+                ref={emailInputRef}
+                name="email"
+                type="email"
+                onChange={handleChange}
+                className="mt-1 block w-full border border-gray-300 rounded px-3 py-2"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium">Password</label>
+              <input
+                name="password"
+                type="password"
+                onChange={handleChange}
+                className="mt-1 block w-full border border-gray-300 rounded px-3 py-2"
+              />
+            </div>
+            <div>
+              <button type="submit" className="w-full bg-red-600 text-white py-2 rounded">
+                Login
+              </button>
+            </div>
           </form>
-        </Box>
-      </Container>
-    </section>
+        </div>
+      </div>
+    </main>
   );
 };
 

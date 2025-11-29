@@ -7,53 +7,67 @@ const generateToken = (id) => {
   });
 };
 
-// REGISTER
 exports.registerUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
+    const { validationResult } = require('express-validator');
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ success: false, errors: errors.array() });
+    }
+
     const exists = await User.findOne({ email });
-    if (exists) return res.status(400).json({ message: 'Email already exists' });
+    if (exists) return res.status(400).json({ success: false, error: 'Email already exists' });
 
     const user = await User.create({ name, email, password });
 
     const token = generateToken(user._id);
 
     res.status(201).json({
-      token,
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email
+      success: true, data: {
+        token,
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email
+        }
       }
     });
   } catch (err) {
-    res.status(500).json({ message: 'Server error', error: err.message });
+    res.status(500).json({ success: false, error: 'Server error', details: err.message });
   }
 };
 
-// LOGIN
 exports.loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    const { validationResult } = require('express-validator');
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ success: false, errors: errors.array() });
+    }
+
     const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ message: 'Invalid credentials' });
+    if (!user) return res.status(400).json({ success: false, error: 'Invalid credentials' });
 
     const isMatch = await user.matchPassword(password);
-    if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
+    if (!isMatch) return res.status(400).json({ success: false, error: 'Invalid credentials' });
 
     const token = generateToken(user._id);
 
-    res.json({
-      token,
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email
+    res.status(200).json({
+      success: true, data: {
+        token,
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email
+        }
       }
     });
   } catch (err) {
-    res.status(500).json({ message: 'Server error', error: err.message });
+    res.status(500).json({ success: false, error: 'Server error', details: err.message });
   }
 };

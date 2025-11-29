@@ -6,7 +6,7 @@ const ProtectedRoute = ({ children }) => {
   const { token } = useContext(AuthContext);
 
   if (!token) {
-    return <Navigate to="/login" replace />; // ensures immediate redirect
+    return <Navigate to="/login" replace />;
   }
 
   return children;

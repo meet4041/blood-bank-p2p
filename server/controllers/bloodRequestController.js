@@ -1,6 +1,5 @@
 const BloodRequest = require('../models/BloodRequest');
 
-// Create a new blood request
 exports.createBloodRequest = async (req, res) => {
   try {
     const request = new BloodRequest({
@@ -9,13 +8,12 @@ exports.createBloodRequest = async (req, res) => {
     });
 
     const saved = await request.save();
-    res.status(201).json(saved);
+    res.status(201).json({ success: true, data: saved });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ success: false, error: err.message });
   }
 };
 
-// Get all requests (admin or public)
 exports.getAllRequests = async (req, res) => {
   try {
     const filters = {};
@@ -23,24 +21,22 @@ exports.getAllRequests = async (req, res) => {
     if (req.query.city) filters.city = req.query.city;
 
     const requests = await BloodRequest.find(filters).populate('requestedBy', 'name email');
-    res.json(requests);
+    res.status(200).json({ success: true, data: requests });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ success: false, error: err.message });
   }
 };
 
-// Get single request by ID
 exports.getRequestById = async (req, res) => {
   try {
     const request = await BloodRequest.findById(req.params.id);
-    if (!request) return res.status(404).json({ message: "Request not found" });
-    res.json(request);
+    if (!request) return res.status(404).json({ success: false, error: "Request not found" });
+    res.status(200).json({ success: true, data: request });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ success: false, error: err.message });
   }
 };
 
-// Update request (PUT)
 exports.updateBloodRequest = async (req, res) => {
   try {
     const updated = await BloodRequest.findByIdAndUpdate(
@@ -49,15 +45,14 @@ exports.updateBloodRequest = async (req, res) => {
       { new: true }
     );
 
-    if (!updated) return res.status(404).json({ message: "Request not found" });
+    if (!updated) return res.status(404).json({ success: false, error: "Request not found" });
 
-    res.json(updated);
+    res.status(200).json({ success: true, data: updated });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ success: false, error: err.message });
   }
 };
 
-// Patch request
 exports.patchBloodRequest = async (req, res) => {
   try {
     const updated = await BloodRequest.findByIdAndUpdate(
@@ -66,29 +61,27 @@ exports.patchBloodRequest = async (req, res) => {
       { new: true }
     );
 
-    if (!updated) return res.status(404).json({ message: "Request not found" });
+    if (!updated) return res.status(404).json({ success: false, error: "Request not found" });
 
-    res.json(updated);
+    res.status(200).json({ success: true, data: updated });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ success: false, error: err.message });
   }
 };
 
-// Delete request
 exports.deleteBloodRequest = async (req, res) => {
   try {
     const removed = await BloodRequest.findByIdAndDelete(req.params.id);
-    if (!removed) return res.status(404).json({ message: "Request not found" });
-    res.json({ message: "Blood request deleted" });
+    if (!removed) return res.status(404).json({ success: false, error: "Request not found" });
+    res.status(204).end();
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ success: false, error: err.message });
   }
 };
 
-// Approve or reject request
 exports.updateStatus = async (req, res) => {
   try {
-    const { status } = req.body; // approved / rejected
+    const { status } = req.body; 
 
     const updated = await BloodRequest.findByIdAndUpdate(
       req.params.id,
@@ -96,10 +89,10 @@ exports.updateStatus = async (req, res) => {
       { new: true }
     );
 
-    if (!updated) return res.status(404).json({ message: "Request not found" });
+    if (!updated) return res.status(404).json({ success: false, error: "Request not found" });
 
-    res.json(updated);
+    res.status(200).json({ success: true, data: updated });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ success: false, error: err.message });
   }
 };

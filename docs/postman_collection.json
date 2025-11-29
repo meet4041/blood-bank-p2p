@@ -1,0 +1,136 @@
+{
+  "info": {
+    "name": "Blood Bank API - Full Collection",
+    "_postman_id": "11111111-1111-1111-1111-111111111111",
+    "description": "Complete Postman collection to test Blood Bank API endpoints including auth, donors, and blood requests with all HTTP methods.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Register User",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "http://localhost:8000/api/auth/register", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","auth","register"] },
+        "body": { "mode": "raw", "raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"test@example.com\",\n  \"password\": \"password123\"\n}" }
+      }
+    },
+    {
+      "name": "Login User",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "http://localhost:8000/api/auth/login", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","auth","login"] },
+        "body": { "mode": "raw", "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"password123\"\n}" }
+      }
+    },
+    {
+      "name": "Get All Donors",
+      "request": { "method": "GET", "url": { "raw": "http://localhost:8000/api/donors", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","donors"] } }
+    },
+    {
+      "name": "Create Donor",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": { "raw": "http://localhost:8000/api/donors", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","donors"] },
+        "body": { "mode": "raw", "raw": "{\n  \"name\": \"Alice\",\n  \"bloodGroup\": \"O+\",\n  \"phone\": \"1234567890\",\n  \"city\": \"CityX\"\n}" }
+      }
+    },
+    {
+      "name": "Update Donor (PUT)",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": { "raw": "http://localhost:8000/api/donors/{{donorId}}", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","donors","{{donorId}}"] },
+        "body": { "mode": "raw", "raw": "{\n  \"name\": \"Alice Updated\",\n  \"city\": \"CityY\"\n}" }
+      }
+    },
+    {
+      "name": "Patch Donor (PATCH)",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": { "raw": "http://localhost:8000/api/donors/{{donorId}}", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","donors","{{donorId}}"] },
+        "body": { "mode": "raw", "raw": "{\n  \"phone\": \"9876543210\"\n}" }
+      }
+    },
+    {
+      "name": "Delete Donor",
+      "request": {
+        "method": "DELETE",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+        "url": { "raw": "http://localhost:8000/api/donors/{{donorId}}", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","donors","{{donorId}}"] }
+      }
+    },
+    {
+      "name": "Get All Blood Requests",
+      "request": { "method": "GET", "url": { "raw": "http://localhost:8000/api/requests", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","requests"] } }
+    },
+    {
+      "name": "Create Blood Request",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": { "raw": "http://localhost:8000/api/requests", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","requests"] },
+        "body": { "mode": "raw", "raw": "{\n  \"patientName\": \"John Doe\",\n  \"bloodGroup\": \"A+\",\n  \"unitsRequired\": 2,\n  \"hospital\": \"General Hospital\",\n  \"city\": \"CityY\"\n}" }
+      }
+    },
+    {
+      "name": "Update Blood Request (PUT)",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": { "raw": "http://localhost:8000/api/requests/{{requestId}}", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","requests","{{requestId}}"] },
+        "body": { "mode": "raw", "raw": "{\n  \"unitsRequired\": 3\n}" }
+      }
+    },
+    {
+      "name": "Patch Blood Request (PATCH)",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": { "raw": "http://localhost:8000/api/requests/{{requestId}}", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","requests","{{requestId}}"] },
+        "body": { "mode": "raw", "raw": "{\n  \"hospital\": \"Updated Hospital\"\n}" }
+      }
+    },
+    {
+      "name": "Update Blood Request Status",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": { "raw": "http://localhost:8000/api/requests/{{requestId}}/status", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","requests","{{requestId}}","status"] },
+        "body": { "mode": "raw", "raw": "{\n  \"status\": \"Completed\"\n}" }
+      }
+    },
+    {
+      "name": "Delete Blood Request",
+      "request": {
+        "method": "DELETE",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+        "url": { "raw": "http://localhost:8000/api/requests/{{requestId}}", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","requests","{{requestId}}"] }
+      }
+    }
+  ]
+}

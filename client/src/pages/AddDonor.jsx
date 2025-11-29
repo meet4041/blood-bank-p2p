@@ -1,12 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
 import { createDonor } from "../api/donorApi";
-import { TextField, Button, Container, Typography, Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 const AddDonor = () => {
   const navigate = useNavigate();
 
-  // Demonstrates useRef (required by rubric)
   const nameRef = useRef(null);
   useEffect(() => {
     nameRef.current?.focus();
@@ -25,6 +23,11 @@ const AddDonor = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!form.name || !form.bloodGroup || !form.phone) {
+      alert('Please fill in name, blood group and phone');
+      return;
+    }
+
     try {
       await createDonor(form);
       alert("Donor added!");
@@ -36,54 +39,39 @@ const AddDonor = () => {
 
   return (
     <main>
-      <Container maxWidth="sm" sx={{ mt: 5 }}>
-        
-        {/* Semantic HEADER */}
+      <div className="max-w-xl mx-auto px-4 mt-8">
         <header>
-          <Typography variant="h4" align="center">
-            Add Donor
-          </Typography>
+          <h2 className="text-2xl font-semibold text-center">Add Donor</h2>
         </header>
 
-        {/* Main content section */}
-        <section style={{ marginTop: "20px" }}>
-          <form onSubmit={handleSubmit}>
-            <TextField
-              fullWidth
-              label="Name"
-              name="name"
-              margin="normal"
-              inputRef={nameRef}
-              onChange={handleChange}
-            />
-            <TextField
-              fullWidth
-              label="Blood Group"
-              name="bloodGroup"
-              margin="normal"
-              onChange={handleChange}
-            />
-            <TextField
-              fullWidth
-              label="City"
-              name="city"
-              margin="normal"
-              onChange={handleChange}
-            />
-            <TextField
-              fullWidth
-              label="Phone"
-              name="phone"
-              margin="normal"
-              onChange={handleChange}
-            />
+        <section className="mt-6 bg-white p-6 rounded shadow">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium">Name</label>
+              <input ref={nameRef} name="name" onChange={handleChange} className="mt-1 block w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-400" />
+            </div>
 
-            <Button variant="contained" fullWidth type="submit" sx={{ mt: 3 }}>
-              Add
-            </Button>
+            <div>
+              <label className="block text-sm font-medium">Blood Group</label>
+              <input name="bloodGroup" onChange={handleChange} className="mt-1 block w-full border border-gray-300 rounded px-3 py-2" />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium">City</label>
+              <input name="city" onChange={handleChange} className="mt-1 block w-full border border-gray-300 rounded px-3 py-2" />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium">Phone</label>
+              <input name="phone" onChange={handleChange} className="mt-1 block w-full border border-gray-300 rounded px-3 py-2" />
+            </div>
+
+            <div>
+              <button type="submit" className="w-full bg-red-600 text-white py-2 rounded hover:bg-red-700">Add</button>
+            </div>
           </form>
         </section>
-      </Container>
+      </div>
     </main>
   );
 };

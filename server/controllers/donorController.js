@@ -1,6 +1,5 @@
 const Donor = require('../models/Donor');
 
-// Get all donors (with optional filters)
 exports.getAllDonors = async (req, res) => {
   try {
     const filters = {};
@@ -8,24 +7,22 @@ exports.getAllDonors = async (req, res) => {
     if (req.query.city) filters.city = req.query.city;
 
     const donors = await Donor.find(filters);
-    res.json(donors);
+    res.status(200).json({ success: true, data: donors });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ success: false, error: err.message });
   }
 };
 
-// Get donor by ID
 exports.getDonorById = async (req, res) => {
   try {
     const donor = await Donor.findById(req.params.id);
-    if (!donor) return res.status(404).json({ message: "Donor not found" });
-    res.json(donor);
+    if (!donor) return res.status(404).json({ success: false, error: "Donor not found" });
+    res.status(200).json({ success: true, data: donor });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ success: false, error: err.message });
   }
 };
 
-// Create donor
 exports.createDonor = async (req, res) => {
   try {
     const donor = new Donor({
@@ -34,41 +31,38 @@ exports.createDonor = async (req, res) => {
     });
 
     const saved = await donor.save();
-    res.status(201).json(saved);
+    res.status(201).json({ success: true, data: saved });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ success: false, error: err.message });
   }
 };
 
-// Update donor (PUT)
 exports.updateDonor = async (req, res) => {
   try {
     const donor = await Donor.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!donor) return res.status(404).json({ message: "Donor not found" });
-    res.json(donor);
+    if (!donor) return res.status(404).json({ success: false, error: "Donor not found" });
+    res.status(200).json({ success: true, data: donor });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ success: false, error: err.message });
   }
 };
 
-// Patch donor
 exports.patchDonor = async (req, res) => {
   try {
     const donor = await Donor.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!donor) return res.status(404).json({ message: "Donor not found" });
-    res.json(donor);
+    if (!donor) return res.status(404).json({ success: false, error: "Donor not found" });
+    res.status(200).json({ success: true, data: donor });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ success: false, error: err.message });
   }
 };
 
-// Delete donor
 exports.deleteDonor = async (req, res) => {
   try {
     const donor = await Donor.findByIdAndDelete(req.params.id);
-    if (!donor) return res.status(404).json({ message: "Donor not found" });
-    res.json({ message: "Donor deleted" });
+    if (!donor) return res.status(404).json({ success: false, error: "Donor not found" });
+    res.status(204).end();
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ success: false, error: err.message });
   }
 };

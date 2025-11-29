@@ -1,18 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { getRequests, deleteRequest } from "../api/requestApi";
-import { Button, Container, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 const BloodRequest = () => {
   const navigate = useNavigate();
   const [requests, setRequests] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const fetchRequests = async () => {
     try {
+      setLoading(true);
       const data = await getRequests();
-      setRequests(data);
+      setRequests(data || []);
     } catch (err) {
       console.error("Error fetching requests:", err);
+      alert("Error fetching requests");
+    }
+    finally {
+      setLoading(false);
     }
   };
 
@@ -33,89 +38,42 @@ const BloodRequest = () => {
 
   return (
     <main>
-      <Container maxWidth="md" sx={{ mt: 5 }}>
-        
-        {/* HEADER */}
+      <div className="max-w-3xl mx-auto px-4 mt-8">
         <header>
-          <Typography variant="h4" align="center">
-            Blood Requests
-          </Typography>
+          <h2 className="text-2xl font-semibold text-center">Blood Requests</h2>
         </header>
 
-        {/* ACTION SECTION */}
-        <section style={{ marginTop: "20px", textAlign: "center" }}>
-          <Button
-            variant="contained"
-            onClick={() => navigate("/add-request")}
-            sx={{ mb: 3 }}
-          >
-            Add New Request
-          </Button>
+        <section className="mt-6 text-center">
+          <button onClick={() => navigate("/add-request")} className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Add New Request</button>
         </section>
 
-        {/* LIST SECTION */}
-        <section>
-          {requests.length === 0 ? (
-            <Typography align="center" sx={{ mt: 3 }}>
-              No blood requests found.
-            </Typography>
+        <section className="mt-6">
+          {loading ? (
+            <p className="text-center mt-6">Loading requests...</p>
+          ) : requests.length === 0 ? (
+            <p className="text-center mt-6">No blood requests found.</p>
           ) : (
-            <ul style={{ listStyle: "none", padding: 0 }}>
+            <ul className="space-y-4 mt-4">
               {requests.map((req) => (
-                <li
-                  key={req._id}
-                  style={{
-                    background: "#fff",
-                    padding: "16px",
-                    marginBottom: "12px",
-                    borderRadius: "8px",
-                    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center"
-                  }}
-                >
-                  {/* Request Details Section */}
-                  <section>
-                    <Typography variant="h6">{req.patientName}</Typography>
-                    <Typography>
-                      Blood Group: <strong>{req.bloodGroup}</strong>
-                    </Typography>
-                    <Typography>
-                      Units Needed: <strong>{req.units}</strong>
-                    </Typography>
-                    <Typography>
-                      Hospital: <strong>{req.hospital}</strong>
-                    </Typography>
-                    <Typography>
-                      City: <strong>{req.city}</strong>
-                    </Typography>
-                  </section>
+                <li key={req._id} className="bg-white p-4 rounded shadow flex justify-between items-start">
+                  <div>
+                    <h3 className="text-lg font-semibold">{req.patientName}</h3>
+                    <p>Blood Group: <strong>{req.bloodGroup}</strong></p>
+                    <p>Units Needed: <strong>{req.unitsRequired ?? req.units}</strong></p>
+                    <p>Hospital: <strong>{req.hospital}</strong></p>
+                    <p>City: <strong>{req.city}</strong></p>
+                  </div>
 
-                  {/* ACTION BUTTONS */}
-                  <nav style={{ display: "flex", gap: "8px" }}>
-                    <Button
-                      variant="outlined"
-                      onClick={() => navigate(`/edit-request/${req._id}`)}
-                    >
-                      Edit
-                    </Button>
-
-                    <Button
-                      variant="contained"
-                      color="error"
-                      onClick={() => handleDelete(req._id)}
-                    >
-                      Delete
-                    </Button>
-                  </nav>
+                  <div className="flex flex-col gap-2">
+                    <button onClick={() => navigate(`/edit-request/${req._id}`)} className="px-3 py-1 border rounded">Edit</button>
+                    <button onClick={() => handleDelete(req._id)} className="px-3 py-1 bg-red-600 text-white rounded">Delete</button>
+                  </div>
                 </li>
               ))}
             </ul>
           )}
         </section>
-
-      </Container>
+      </div>
     </main>
   );
 };

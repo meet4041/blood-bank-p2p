@@ -1,43 +1,31 @@
 import React from "react";
-import { Container, Typography, Box, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import QuoteWidget from "../components/QuoteWidget"; // <--- IMPORT THIS
+import QuoteWidget from "../components/NearbyCenters";
 
 const Dashboard = () => {
   const navigate = useNavigate();
 
   return (
     <main>
-      <Container sx={{ mt: 5 }}>
-
+      <div className="max-w-4xl mx-auto px-4 mt-8">
         <header>
-          <Typography variant="h4" align="center">
-            Dashboard
-          </Typography>
-          
-          {/* ADD THE WIDGET HERE */}
-          <QuoteWidget /> 
+          <h2 className="text-2xl font-semibold text-center">Dashboard</h2>
 
-          <Typography align="center" sx={{ mt: 2 }}>
-            Welcome to the Blood Bank Management System!
-          </Typography>
+          {/* Overpass widget */}
+          <div className="mt-4">
+            <QuoteWidget />
+          </div>
+
+          <p className="text-center mt-4">Welcome to the Blood Bank Management System!</p>
         </header>
 
-        <section style={{ marginTop: "30px" }}>
-          <nav aria-label="Dashboard Navigation">
-            <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
-              <Button variant="contained" sx={{ mx: 2 }} onClick={() => navigate("/donors")}>
-                Manage Donors
-              </Button>
-
-              <Button variant="contained" sx={{ mx: 2 }} onClick={() => navigate("/requests")}>
-                Manage Requests
-              </Button>
-            </Box>
-          </nav>
+        <section className="mt-8">
+          <div className="flex justify-center gap-4">
+            <button className="bg-red-600 text-white px-4 py-2 rounded" onClick={() => navigate("/donors")}>Manage Donors</button>
+            <button className="bg-red-600 text-white px-4 py-2 rounded" onClick={() => navigate("/requests")}>Manage Requests</button>
+          </div>
         </section>
-
-      </Container>
+      </div>
     </main>
   );
 };

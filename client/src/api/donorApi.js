@@ -1,7 +1,43 @@
-import API from "./axiosConfig";
+import { BASE_URL, getAuthHeaders, handleResponse } from './apiClient';
 
-export const getDonors = () => API.get("/donors");
-export const getDonorById = (id) => API.get(`/donors/${id}`);
-export const createDonor = (data) => API.post("/donors", data);
-export const updateDonor = (id, data) => API.put(`/donors/${id}`, data);
-export const deleteDonor = (id) => API.delete(`/donors/${id}`);
+export const getDonors = async () => {
+    const res = await fetch(`${BASE_URL}/donors`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+    });
+    return handleResponse(res);
+};
+
+export const getDonorById = async (id) => {
+    const res = await fetch(`${BASE_URL}/donors/${id}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+    });
+    return handleResponse(res);
+};
+
+export const createDonor = async (data) => {
+    const res = await fetch(`${BASE_URL}/donors`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+        body: JSON.stringify(data),
+    });
+    return handleResponse(res);
+};
+
+export const updateDonor = async (id, data) => {
+    const res = await fetch(`${BASE_URL}/donors/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+        body: JSON.stringify(data),
+    });
+    return handleResponse(res);
+};
+
+export const deleteDonor = async (id) => {
+    const res = await fetch(`${BASE_URL}/donors/${id}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+    });
+    return handleResponse(res);
+};

@@ -1,0 +1,30 @@
+import React from 'react';
+
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error, info) {
+    console.error('Unhandled error in component tree:', error, info);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <main role="alert" aria-live="assertive" style={{ padding: 20, textAlign: 'center' }}>
+          <h2>Something went wrong.</h2>
+          <pre style={{ whiteSpace: 'pre-wrap' }}>{String(this.state.error)}</pre>
+        </main>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+export default ErrorBoundary;

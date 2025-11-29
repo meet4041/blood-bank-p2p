@@ -68,3 +68,16 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+## Third-party APIs used
+
+- **Overpass API (OpenStreetMap)**: The dashboard widget queries `https://overpass-api.de/api/interpreter` to find nearby nodes tagged as blood donation centers or hospitals. This is used to surface local donation centers directly in the app UI.
+
+- **IP geolocation fallback (`ipapi.co`)**: If the browser's geolocation is denied or unavailable, the widget attempts an IP-based lookup via `https://ipapi.co/json/` to obtain an approximate latitude/longitude and continue searching. IP-based location is approximate and subject to provider rate limits.
+
+## Caching behavior
+
+- The donation-centers widget caches Overpass results in `localStorage` to reduce repeated queries. Cache keys include a rounded form of the latitude/longitude and the selected radius.
+- Cache entries include a timestamp and are valid for 60 minutes (TTL). Stale entries are automatically invalidated and removed when expired.
+
+If you rely on heavy usage, consider adding server-side caching or a paid geolocation provider to avoid rate limits.

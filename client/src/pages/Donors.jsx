@@ -1,25 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { getDonors, deleteDonor } from "../api/donorApi";
-import {
-  Button,
-  Container,
-  Typography,
-  Box,
-  Card,
-  CardContent
-} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 const Donors = () => {
   const [donors, setDonors] = useState([]);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const fetchDonors = async () => {
     try {
-      const res = await getDonors();
-      setDonors(res.data);
+      setLoading(true);
+      const data = await getDonors();
+      setDonors(data || []);
     } catch (err) {
       alert("Error fetching donors");
+    }
+    finally {
+      setLoading(false);
     }
   };
 
@@ -39,71 +36,43 @@ const Donors = () => {
 
   return (
     <main>
-      <Container sx={{ mt: 5 }}>
-
-        {/* PAGE HEADER */}
+      <div className="max-w-4xl mx-auto px-4 mt-8">
         <header>
-          <Typography variant="h4" align="center">
-            Donors
-          </Typography>
+          <h2 className="text-2xl font-semibold text-center">Donors</h2>
         </header>
 
-        {/* ACTIONS SECTION */}
-        <section style={{ marginTop: "20px", marginBottom: "20px" }}>
-          <nav aria-label="Add Donor">
-            <Button
-              variant="contained"
-              onClick={() => navigate("/add-donor")}
-            >
-              Add Donor
-            </Button>
-          </nav>
+        <section className="mt-6 mb-6">
+          <div className="text-center">
+            <button className="bg-red-600 text-white px-4 py-2 rounded" onClick={() => navigate("/add-donor")}>Add Donor</button>
+          </div>
         </section>
 
-        {/* DONOR LIST SECTION */}
         <section>
-          {donors.length === 0 ? (
-            <Typography align="center" sx={{ mt: 3 }}>
-              No donors found.
-            </Typography>
+          {loading ? (
+            <p className="text-center mt-6">Loading donors...</p>
+          ) : donors.length === 0 ? (
+            <p className="text-center mt-6">No donors found.</p>
           ) : (
             donors.map((d) => (
-              <article key={d._id} style={{ marginBottom: "16px" }}>
-                <Card>
-                  <CardContent>
-                    <Typography variant="h6">{d.name}</Typography>
-                    <Typography>Blood Group: {d.bloodGroup}</Typography>
-                    <Typography>City: {d.city}</Typography>
-                    <Typography>Phone: {d.phone}</Typography>
+              <article key={d._id} className="mb-4">
+                <div className="bg-white p-4 rounded shadow">
+                  <h3 className="text-lg font-semibold">{d.name}</h3>
+                  <p>Blood Group: {d.bloodGroup}</p>
+                  <p>City: {d.city}</p>
+                  <p>Phone: {d.phone}</p>
 
-                    {/* Donor Actions */}
-                    <nav style={{ marginTop: "15px" }}>
-                      <Box>
-                        <Button
-                          variant="outlined"
-                          onClick={() => navigate(`/edit-donor/${d._id}`)}
-                          sx={{ mr: 1 }}
-                        >
-                          Edit
-                        </Button>
-
-                        <Button
-                          variant="contained"
-                          color="error"
-                          onClick={() => handleDelete(d._id)}
-                        >
-                          Delete
-                        </Button>
-                      </Box>
-                    </nav>
-                  </CardContent>
-                </Card>
+                  <nav className="mt-3" aria-label="Donor actions">
+                    <div className="flex gap-2">
+                      <button onClick={() => navigate(`/edit-donor/${d._id}`)} className="px-3 py-1 border rounded">Edit</button>
+                      <button onClick={() => handleDelete(d._id)} className="px-3 py-1 bg-red-600 text-white rounded">Delete</button>
+                    </div>
+                  </nav>
+                </div>
               </article>
             ))
           )}
         </section>
-
-      </Container>
+      </div>
     </main>
   );
 };

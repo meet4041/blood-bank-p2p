@@ -7,7 +7,7 @@ const BloodRequestSchema = new mongoose.Schema(
     unitsRequired: { type: Number, required: true },
     hospital: { type: String, required: true },
     city: { type: String, required: true },
-    status: { type: String, default: "pending" }, // pending, approved, rejected
+    status: { type: String, default: "pending" }, 
     requestedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" }
   },
   { timestamps: true }

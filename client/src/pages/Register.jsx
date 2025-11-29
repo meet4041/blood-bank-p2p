@@ -1,10 +1,10 @@
 import React, { useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { TextField, Button, Container, Typography, Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { registerUser } from "../api/authApi";
 
 const Register = () => {
-  const { login } = useContext(AuthContext); // auto-login after register
+  const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
@@ -20,89 +20,49 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:8000/api/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(form)
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Registration Failed");
-      }
-
-      const data = await response.json();
+      const result = await registerUser(form); // returns { token, user }
       alert("Registration successful!");
 
-      // Auto-login if token returned
-      if (data.token) {
-        login(data.token);
+      if (result?.token) {
+        login(result.token);
         navigate("/dashboard");
       } else {
-        navigate("/login"); // fallback
+        navigate("/login");
       }
     } catch (err) {
-      alert(err.message);
+      alert(err.message || "Registration Failed");
     }
   };
 
   return (
-    <Container maxWidth="sm">
-      <header>
-        <Typography variant="h4" align="center" component="h1" sx={{ mt: 5 }}>
-          Register
-        </Typography>
-      </header>
+    <main>
+      <div className="max-w-md mx-auto px-4 mt-12">
+        <div className="bg-white p-6 rounded shadow">
+          <h2 className="text-2xl font-semibold text-center mb-4">Register</h2>
 
-      <main>
-        <section>
-          <Box sx={{ mt: 3 }}>
-            <form onSubmit={handleSubmit}>
-              <TextField
-                fullWidth
-                label="Name"
-                name="name"
-                margin="normal"
-                onChange={handleChange}
-              />
-              <TextField
-                fullWidth
-                label="Email"
-                name="email"
-                type="email"
-                margin="normal"
-                onChange={handleChange}
-              />
-              <TextField
-                fullWidth
-                label="Password"
-                type="password"
-                name="password"
-                margin="normal"
-                onChange={handleChange}
-              />
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium">Name</label>
+              <input name="name" onChange={handleChange} className="mt-1 block w-full border border-gray-300 rounded px-3 py-2" />
+            </div>
 
-              <Button
-                variant="contained"
-                fullWidth
-                type="submit"
-                sx={{ mt: 3 }}
-              >
-                Register
-              </Button>
-            </form>
-          </Box>
-        </section>
-      </main>
+            <div>
+              <label className="block text-sm font-medium">Email</label>
+              <input name="email" type="email" onChange={handleChange} className="mt-1 block w-full border border-gray-300 rounded px-3 py-2" />
+            </div>
 
-      <footer>
-        <Typography variant="body2" align="center" sx={{ mt: 5, mb: 2 }}>
-          &copy; {new Date().getFullYear()} YourAppName. All rights reserved.
-        </Typography>
-      </footer>
-    </Container>
+            <div>
+              <label className="block text-sm font-medium">Password</label>
+              <input name="password" type="password" onChange={handleChange} className="mt-1 block w-full border border-gray-300 rounded px-3 py-2" />
+            </div>
+
+            <div>
+              <button type="submit" className="w-full bg-red-600 text-white py-2 rounded">Register</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
   );
 };
 
