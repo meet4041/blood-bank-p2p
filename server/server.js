@@ -77,11 +77,13 @@ const authRoutes = require('./routes/auth');
 const donorRoutes = require('./routes/donors');
 const bloodRequestRoutes = require('./routes/bloodRequests');
 const dashboardRoutes = require('./routes/dashboard');
+const userRoutes = require('./routes/users'); // <--- IMPORT THIS
 
 app.use('/api/auth', authRoutes);
 app.use('/api/donors', donorRoutes);
 app.use('/api/requests', bloodRequestRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/users', userRoutes); // <--- ADD THIS
 
 // -------------------------------------------
 // HOME ROUTE (Optional)

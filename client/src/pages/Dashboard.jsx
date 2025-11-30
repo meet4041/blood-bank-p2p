@@ -78,7 +78,7 @@ const Dashboard = () => {
           </p>
         </header>
 
-        {/* Stats Grid - Now Uniform for All Roles */}
+        {/* Stats Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <div className="bg-white p-4 rounded-lg shadow text-center">
             <div className="text-2xl font-bold text-red-600">{verifiedDonorsCount}</div>
@@ -120,7 +120,8 @@ const Dashboard = () => {
               View Requests
             </button>
 
-            {(user?.role === 'hospital' || user?.role === 'admin') && (
+            {/* CHANGED: Only Hospital can add donors (Admin removed) */}
+            {user?.role === 'hospital' && (
               <button
                 className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition shadow"
                 onClick={() => navigate("/add-donor")}
@@ -129,17 +130,20 @@ const Dashboard = () => {
               </button>
             )}
 
-            <button
-              className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition shadow"
-              onClick={() => navigate("/add-request")}
-            >
-              Add Request
-            </button>
+            {/* CHANGED: Only User and Hospital can add requests (Admin hidden) */}
+            {(user?.role === 'user' || user?.role === 'hospital') && (
+              <button
+                className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition shadow"
+                onClick={() => navigate("/add-request")}
+              >
+                Add Request
+              </button>
+            )}
           </div>
 
           {user?.role === 'user' && (
             <div className="mt-4 text-sm text-gray-600">
-              <p>Note: Only Hospital and Admin users can add donors. Contact administrator for access.</p>
+              <p>Note: Only Hospital users can add donors. Contact administrator for access.</p>
             </div>
           )}
         </section>

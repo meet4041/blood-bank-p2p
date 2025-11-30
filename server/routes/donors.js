@@ -19,7 +19,11 @@ router.get('/', getAllDonors);
 router.get('/:id', getDonorById);
 
 // Protected routes — authenticated + roles
-router.post('/', authMiddleware, roleMiddleware.allowRoles('admin', 'hospital'), createDonor);
+
+// CHANGED: Removed 'admin' from create permissions
+router.post('/', authMiddleware, roleMiddleware.allowRoles('hospital'), createDonor);
+
+// Admin can still update/delete for moderation purposes
 router.put('/:id', authMiddleware, roleMiddleware.allowRoles('admin', 'hospital', 'user'), updateDonor);
 router.patch('/:id', authMiddleware, roleMiddleware.allowRoles('admin', 'hospital', 'user'), patchDonor);
 router.delete('/:id', authMiddleware, roleMiddleware.allowRoles('admin', 'hospital', 'user'), deleteDonor);

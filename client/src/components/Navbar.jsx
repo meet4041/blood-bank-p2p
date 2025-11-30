@@ -1,11 +1,13 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 
 const Navbar = () => {
   const { user, isAuthenticated, logout } = useContext(AuthContext);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [adminDropdown, setAdminDropdown] = useState(false); // NEW STATE
   const navigate = useNavigate();
+  const dropdownRef = useRef(null); // Ref for clicking outside
 
   const toggleMobile = () => setMobileOpen((s) => !s);
 
@@ -18,7 +20,19 @@ const Navbar = () => {
   const handleNavigation = (path) => {
     navigate(path);
     setMobileOpen(false);
+    setAdminDropdown(false);
   };
+
+  // Close dropdown if clicked outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setAdminDropdown(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
     <header className="bg-red-600 text-white">
@@ -31,7 +45,6 @@ const Navbar = () => {
             >
               Blood Bank Management
             </button>
-
           </h1>
         </div>
 
@@ -39,26 +52,61 @@ const Navbar = () => {
         <nav className="hidden sm:flex items-center gap-4">
           {isAuthenticated ? (
             <>
-              {user && (
-                <span className="text-lg text-red-200">
-                  Welcome, {user.name}
-                </span>
-              )}
               <button
                 onClick={() => navigate("/dashboard")}
-                className="text-white text-lg hover:text-red-200 transition"
+                className="text-white text-lg hover:text-red-200 transition mr-3"
               >
                 Dashboard
               </button>
+
+              {/* ADMIN LINKS - Desktop Dropdown */}
+              {user?.role === 'admin' && (
+                <div className="relative" ref={dropdownRef}>
+                  <button
+                    onClick={() => setAdminDropdown(!adminDropdown)}
+                    className="text-white text-lg hover:text-red-200 transition flex items-center gap-1"
+                  >
+                    Manage
+                    <svg 
+                      xmlns="http://www.w3.org/2000/svg" 
+                      className={`h-4 w-4 transition-transform ${adminDropdown ? 'rotate-180' : ''}`} 
+                      fill="none" 
+                      viewBox="0 0 24 24" 
+                      stroke="currentColor"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+
+                  {/* Dropdown Menu */}
+                  {adminDropdown && (
+                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+                      <button
+                        onClick={() => handleNavigation("/admin/users")}
+                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition"
+                      >
+                        Manage Users
+                      </button>
+                      <button
+                        onClick={() => handleNavigation("/admin/hospitals")}
+                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition"
+                      >
+                        Manage Hospitals
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+
               <button
                 onClick={() => navigate("/donors")}
-                className="text-white text-lg hover:text-red-200 transition"
+                className="text-white text-lg hover:text-red-200 transition mr-3"
               >
                 Donors
               </button>
               <button
                 onClick={() => navigate("/requests")}
-                className="text-white text-lg hover:text-red-200 transition"
+                className="text-white text-lg hover:text-red-200 transition mr-3"
               >
                 Requests
               </button>
@@ -115,6 +163,25 @@ const Navbar = () => {
               >
                 Dashboard
               </button>
+
+              {/* ADMIN LINKS - Mobile (Kept linear for better mobile UX) */}
+              {user?.role === 'admin' && (
+                <>
+                  <button
+                    className="text-left w-full py-2 hover:text-red-200 transition pl-4 border-l-2 border-red-500"
+                    onClick={() => handleNavigation("/admin/users")}
+                  >
+                    Manage Users
+                  </button>
+                  <button
+                    className="text-left w-full py-2 hover:text-red-200 transition pl-4 border-l-2 border-red-500"
+                    onClick={() => handleNavigation("/admin/hospitals")}
+                  >
+                    Manage Hospitals
+                  </button>
+                </>
+              )}
+
               <button
                 className="text-left w-full py-2 hover:text-red-200 transition"
                 onClick={() => handleNavigation("/donors")}

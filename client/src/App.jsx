@@ -15,6 +15,10 @@ import AddDonor from "./pages/AddDonor";
 import BloodRequests from "./pages/BloodRequests";
 import AddRequest from "./pages/AddRequest";
 
+// Admin Pages
+import AllUsers from "./pages/AllUsers";
+import AllHospitals from "./pages/AllHospitals";
+
 const App = () => {
   return (
     <AuthProvider>
@@ -68,6 +72,24 @@ const App = () => {
                 element={
                   <ProtectedRoute>
                     <AddRequest />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* ADMIN ROUTES */}
+              <Route
+                path="/admin/users"
+                element={
+                  <ProtectedRoute>
+                    <AllUsers />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/hospitals"
+                element={
+                  <ProtectedRoute>
+                    <AllHospitals />
                   </ProtectedRoute>
                 }
               />
