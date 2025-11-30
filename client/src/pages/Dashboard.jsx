@@ -120,17 +120,9 @@ const Dashboard = () => {
               View Requests
             </button>
 
-            {/* CHANGED: Only Hospital can add donors (Admin removed) */}
-            {user?.role === 'hospital' && (
-              <button
-                className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition shadow"
-                onClick={() => navigate("/add-donor")}
-              >
-                Add Donor
-              </button>
-            )}
-
-            {/* CHANGED: Only User and Hospital can add requests (Admin hidden) */}
+            {/* CHANGED: Removed "Add Donor" button for Hospital */}
+            
+            {/* ONLY User and Hospital can add requests */}
             {(user?.role === 'user' || user?.role === 'hospital') && (
               <button
                 className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition shadow"
@@ -141,9 +133,10 @@ const Dashboard = () => {
             )}
           </div>
 
+          {/* CHANGED: Updated helper text since Hospital can't add donors anymore */}
           {user?.role === 'user' && (
             <div className="mt-4 text-sm text-gray-600">
-              <p>Note: Only Hospital users can add donors. Contact administrator for access.</p>
+              <p>Contact administrator for any donor-related inquiries.</p>
             </div>
           )}
         </section>
