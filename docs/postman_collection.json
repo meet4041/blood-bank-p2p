@@ -1,135 +1,663 @@
 {
   "info": {
-    "name": "Blood Bank API - Full Collection",
+    "name": "Blood Bank API - Complete Collection",
     "_postman_id": "11111111-1111-1111-1111-111111111111",
-    "description": "Complete Postman collection to test Blood Bank API endpoints including auth, donors, and blood requests with all HTTP methods.",
+    "description": "Complete Postman collection to test Blood Bank API endpoints including auth, donors, blood requests, and dashboard with all HTTP methods.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
     {
-      "name": "Register User",
-      "request": {
-        "method": "POST",
-        "header": [{ "key": "Content-Type", "value": "application/json" }],
-        "url": { "raw": "http://localhost:8000/api/auth/register", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","auth","register"] },
-        "body": { "mode": "raw", "raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"test@example.com\",\n  \"password\": \"password123\"\n}" }
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/register",
+              "protocol": "http",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"test@example.com\",\n  \"password\": \"password123\",\n  \"role\": \"user\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "protocol": "http",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"password123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login Hospital",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "protocol": "http",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"hospital@example.com\",\n  \"password\": \"password123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login Admin",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "protocol": "http",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"password123\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "item": [
+        {
+          "name": "Get Dashboard Stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/dashboard",
+              "protocol": "http",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "dashboard"
+              ]
+            },
+            "description": "Get dashboard statistics (role-based data for admin, hospital, user)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Donors",
+      "item": [
+        {
+          "name": "Get All Donors (Public)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/donors",
+              "protocol": "http",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "donors"
+              ]
+            },
+            "description": "Public endpoint - no auth required"
+          }
+        },
+        {
+          "name": "Get Donors with Filters",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/donors?bloodGroup=O+&city=CityX",
+              "protocol": "http",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "donors"
+              ],
+              "query": [
+                {
+                  "key": "bloodGroup",
+                  "value": "O+"
+                },
+                {
+                  "key": "city",
+                  "value": "CityX"
+                }
+              ]
+            },
+            "description": "Filter donors by blood group and city"
+          }
+        },
+        {
+          "name": "Get Donor by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/donors/{{donorId}}",
+              "protocol": "http",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "donors",
+                "{{donorId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Donor (Hospital/Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{hospital_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/donors",
+              "protocol": "http",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "donors"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Alice Johnson\",\n  \"bloodGroup\": \"O+\",\n  \"phone\": \"1234567890\",\n  \"city\": \"CityX\",\n  \"address\": \"123 Main St\"\n}",
+              "description": "Hospital-created donors are auto-verified. Use 'addedBy' field to create for specific users."
+            }
+          }
+        },
+        {
+          "name": "Update Donor (PUT)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/donors/{{donorId}}",
+              "protocol": "http",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "donors",
+                "{{donorId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Alice Johnson Updated\",\n  \"bloodGroup\": \"O+\",\n  \"phone\": \"1234567890\",\n  \"city\": \"CityY\",\n  \"address\": \"456 Oak Ave\"\n}",
+              "description": "Full update - replaces entire resource"
+            }
+          }
+        },
+        {
+          "name": "Patch Donor (PATCH)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/donors/{{donorId}}",
+              "protocol": "http",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "donors",
+                "{{donorId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"9876543210\",\n  \"city\": \"New City\"\n}",
+              "description": "Partial update - only modifies provided fields"
+            }
+          }
+        },
+        {
+          "name": "Verify Donor (Hospital/Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{hospital_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/donors/{{donorId}}/verify",
+              "protocol": "http",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "donors",
+                "{{donorId}}",
+                "verify"
+              ]
+            },
+            "description": "Verify a donor - only hospital/admin can access"
+          }
+        },
+        {
+          "name": "Delete Donor",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/donors/{{donorId}}",
+              "protocol": "http",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "donors",
+                "{{donorId}}"
+              ]
+            },
+            "description": "Delete donor - owner, admin, or hospital can delete"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Blood Requests",
+      "item": [
+        {
+          "name": "Get All Blood Requests (Public)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/requests",
+              "protocol": "http",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "requests"
+              ]
+            },
+            "description": "Public endpoint - no auth required"
+          }
+        },
+        {
+          "name": "Get Blood Requests with Filters",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/requests?status=pending&bloodGroup=A+",
+              "protocol": "http",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "requests"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "pending"
+                },
+                {
+                  "key": "bloodGroup",
+                  "value": "A+"
+                }
+              ]
+            },
+            "description": "Filter requests by status and blood group"
+          }
+        },
+        {
+          "name": "Get Blood Request by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/requests/{{requestId}}",
+              "protocol": "http",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "requests",
+                "{{requestId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Blood Request (User)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/requests",
+              "protocol": "http",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "requests"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"patientName\": \"John Doe\",\n  \"bloodGroup\": \"A+\",\n  \"unitsRequired\": 2,\n  \"hospital\": \"General Hospital\",\n  \"city\": \"CityY\",\n  \"urgency\": \"high\",\n  \"contactNumber\": \"555-0123\"\n}",
+              "description": "Users can create blood requests - automatically set to 'pending' status"
+            }
+          }
+        },
+        {
+          "name": "Update Blood Request (PUT)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/requests/{{requestId}}",
+              "protocol": "http",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "requests",
+                "{{requestId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"patientName\": \"John Doe Updated\",\n  \"bloodGroup\": \"A+\",\n  \"unitsRequired\": 3,\n  \"hospital\": \"City General\",\n  \"city\": \"CityZ\"\n}",
+              "description": "Full update - owner or admin can update"
+            }
+          }
+        },
+        {
+          "name": "Patch Blood Request (PATCH)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/requests/{{requestId}}",
+              "protocol": "http",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "requests",
+                "{{requestId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"unitsRequired\": 4,\n  \"urgency\": \"critical\"\n}",
+              "description": "Partial update - owner or admin can update"
+            }
+          }
+        },
+        {
+          "name": "Update Blood Request Status (Hospital/Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{hospital_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/requests/{{requestId}}/status",
+              "protocol": "http",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "requests",
+                "{{requestId}}",
+                "status"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"approved\"\n}",
+              "description": "Update request status - only hospital/admin can access. Status values: pending, approved, fulfilled, cancelled"
+            }
+          }
+        },
+        {
+          "name": "Delete Blood Request",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/requests/{{requestId}}",
+              "protocol": "http",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "requests",
+                "{{requestId}}"
+              ]
+            },
+            "description": "Delete blood request - owner or admin can delete"
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "your_jwt_token_here",
+      "type": "string"
+    },
+    {
+      "key": "hospital_token",
+      "value": "your_hospital_jwt_token_here",
+      "type": "string"
+    },
+    {
+      "key": "admin_token",
+      "value": "your_admin_jwt_token_here",
+      "type": "string"
+    },
+    {
+      "key": "donorId",
+      "value": "donor_id_here",
+      "type": "string"
+    },
+    {
+      "key": "requestId",
+      "value": "request_id_here",
+      "type": "string"
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Pre-request script for environment setup"
+        ]
       }
     },
     {
-      "name": "Login User",
-      "request": {
-        "method": "POST",
-        "header": [{ "key": "Content-Type", "value": "application/json" }],
-        "url": { "raw": "http://localhost:8000/api/auth/login", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","auth","login"] },
-        "body": { "mode": "raw", "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"password123\"\n}" }
-      }
-    },
-    {
-      "name": "Get All Donors",
-      "request": { "method": "GET", "url": { "raw": "http://localhost:8000/api/donors", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","donors"] } }
-    },
-    {
-      "name": "Create Donor",
-      "request": {
-        "method": "POST",
-        "header": [
-          { "key": "Content-Type", "value": "application/json" },
-          { "key": "Authorization", "value": "Bearer {{token}}" }
-        ],
-        "url": { "raw": "http://localhost:8000/api/donors", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","donors"] },
-        "body": { "mode": "raw", "raw": "{\n  \"name\": \"Alice\",\n  \"bloodGroup\": \"O+\",\n  \"phone\": \"1234567890\",\n  \"city\": \"CityX\"\n}" }
-      }
-    },
-    {
-      "name": "Update Donor (PUT)",
-      "request": {
-        "method": "PUT",
-        "header": [
-          { "key": "Content-Type", "value": "application/json" },
-          { "key": "Authorization", "value": "Bearer {{token}}" }
-        ],
-        "url": { "raw": "http://localhost:8000/api/donors/{{donorId}}", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","donors","{{donorId}}"] },
-        "body": { "mode": "raw", "raw": "{\n  \"name\": \"Alice Updated\",\n  \"city\": \"CityY\"\n}" }
-      }
-    },
-    {
-      "name": "Patch Donor (PATCH)",
-      "request": {
-        "method": "PATCH",
-        "header": [
-          { "key": "Content-Type", "value": "application/json" },
-          { "key": "Authorization", "value": "Bearer {{token}}" }
-        ],
-        "url": { "raw": "http://localhost:8000/api/donors/{{donorId}}", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","donors","{{donorId}}"] },
-        "body": { "mode": "raw", "raw": "{\n  \"phone\": \"9876543210\"\n}" }
-      }
-    },
-    {
-      "name": "Delete Donor",
-      "request": {
-        "method": "DELETE",
-        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-        "url": { "raw": "http://localhost:8000/api/donors/{{donorId}}", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","donors","{{donorId}}"] }
-      }
-    },
-    {
-      "name": "Get All Blood Requests",
-      "request": { "method": "GET", "url": { "raw": "http://localhost:8000/api/requests", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","requests"] } }
-    },
-    {
-      "name": "Create Blood Request",
-      "request": {
-        "method": "POST",
-        "header": [
-          { "key": "Content-Type", "value": "application/json" },
-          { "key": "Authorization", "value": "Bearer {{token}}" }
-        ],
-        "url": { "raw": "http://localhost:8000/api/requests", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","requests"] },
-        "body": { "mode": "raw", "raw": "{\n  \"patientName\": \"John Doe\",\n  \"bloodGroup\": \"A+\",\n  \"unitsRequired\": 2,\n  \"hospital\": \"General Hospital\",\n  \"city\": \"CityY\"\n}" }
-      }
-    },
-    {
-      "name": "Update Blood Request (PUT)",
-      "request": {
-        "method": "PUT",
-        "header": [
-          { "key": "Content-Type", "value": "application/json" },
-          { "key": "Authorization", "value": "Bearer {{token}}" }
-        ],
-        "url": { "raw": "http://localhost:8000/api/requests/{{requestId}}", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","requests","{{requestId}}"] },
-        "body": { "mode": "raw", "raw": "{\n  \"unitsRequired\": 3\n}" }
-      }
-    },
-    {
-      "name": "Patch Blood Request (PATCH)",
-      "request": {
-        "method": "PATCH",
-        "header": [
-          { "key": "Content-Type", "value": "application/json" },
-          { "key": "Authorization", "value": "Bearer {{token}}" }
-        ],
-        "url": { "raw": "http://localhost:8000/api/requests/{{requestId}}", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","requests","{{requestId}}"] },
-        "body": { "mode": "raw", "raw": "{\n  \"hospital\": \"Updated Hospital\"\n}" }
-      }
-    },
-    {
-      "name": "Update Blood Request Status",
-      "request": {
-        "method": "PATCH",
-        "header": [
-          { "key": "Content-Type", "value": "application/json" },
-          { "key": "Authorization", "value": "Bearer {{token}}" }
-        ],
-        "url": { "raw": "http://localhost:8000/api/requests/{{requestId}}/status", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","requests","{{requestId}}","status"] },
-        "body": { "mode": "raw", "raw": "{\n  \"status\": \"Completed\"\n}" }
-      }
-    },
-    {
-      "name": "Delete Blood Request",
-      "request": {
-        "method": "DELETE",
-        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
-        "url": { "raw": "http://localhost:8000/api/requests/{{requestId}}", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["api","requests","{{requestId}}"] }
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Test scripts to verify responses",
+          "pm.test(\"Status code is 200\", function () {",
+          "    pm.response.to.have.status(200);",
+          "});",
+          "",
+          "pm.test(\"Response has success true\", function () {",
+          "    var jsonData = pm.response.json();",
+          "    pm.expect(jsonData.success).to.be.true;",
+          "});"
+        ]
       }
     }
   ]

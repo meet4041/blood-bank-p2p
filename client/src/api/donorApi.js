@@ -3,41 +3,49 @@ import { BASE_URL, getAuthHeaders, handleResponse } from './apiClient';
 export const getDonors = async () => {
     const res = await fetch(`${BASE_URL}/donors`, {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+        headers: getAuthHeaders(),
     });
-    return handleResponse(res);
+    const result = await handleResponse(res);
+    
+    // Backend returns: { success: true, data: [...] }
+    // Return the full response so component can handle the structure
+    return result;
 };
 
 export const getDonorById = async (id) => {
     const res = await fetch(`${BASE_URL}/donors/${id}`, {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+        headers: getAuthHeaders(),
     });
-    return handleResponse(res);
+    const result = await handleResponse(res);
+    return result;
 };
 
 export const createDonor = async (data) => {
     const res = await fetch(`${BASE_URL}/donors`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+        headers: getAuthHeaders(),
         body: JSON.stringify(data),
     });
-    return handleResponse(res);
+    const result = await handleResponse(res);
+    return result;
 };
 
 export const updateDonor = async (id, data) => {
     const res = await fetch(`${BASE_URL}/donors/${id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+        headers: getAuthHeaders(),
         body: JSON.stringify(data),
     });
-    return handleResponse(res);
+    const result = await handleResponse(res);
+    return result;
 };
 
 export const deleteDonor = async (id) => {
     const res = await fetch(`${BASE_URL}/donors/${id}`, {
         method: 'DELETE',
-        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+        headers: getAuthHeaders(),
     });
-    return handleResponse(res);
+    const result = await handleResponse(res);
+    return result;
 };

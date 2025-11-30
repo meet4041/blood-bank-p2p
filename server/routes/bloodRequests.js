@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const authMiddleware = require('../middleware/authMiddleware');
 
+const authMiddleware = require('../middleware/authMiddleware');
+const roleMiddleware = require('../middleware/roleMiddleware');
 const {
   createBloodRequest,
   getAllRequests,
@@ -10,19 +11,19 @@ const {
   patchBloodRequest,
   deleteBloodRequest,
   updateStatus
-} = require('../controllers/bloodRequestController'); 
-router.get('/', getAllRequests);
+} = require('../controllers/bloodRequestController');
 
+// Public — view requests
+router.get('/', getAllRequests);
 router.get('/:id', getRequestById);
 
-router.post('/', authMiddleware, createBloodRequest);
+// Authenticated users
+router.post('/', authMiddleware, roleMiddleware.allowRoles('user'), createBloodRequest);
+router.put('/:id', authMiddleware, roleMiddleware.allowRoles('user', 'admin'), updateBloodRequest);
+router.patch('/:id', authMiddleware, roleMiddleware.allowRoles('user', 'admin'), patchBloodRequest);
+router.delete('/:id', authMiddleware, roleMiddleware.allowRoles('user', 'admin'), deleteBloodRequest);
 
-router.put('/:id', authMiddleware, updateBloodRequest);
-
-router.patch('/:id', authMiddleware, patchBloodRequest);
-
-router.patch('/:id/status', authMiddleware, updateStatus);
-
-router.delete('/:id', authMiddleware, deleteBloodRequest);
+// Hospital/Admin — update request status
+router.patch('/:id/status', authMiddleware, roleMiddleware.allowRoles('admin', 'hospital'), updateStatus);
 
 module.exports = router;

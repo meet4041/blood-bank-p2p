@@ -3,11 +3,22 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 
 const Navbar = () => {
-  const { token, logout } = useContext(AuthContext);
+  const { user, isAuthenticated, logout } = useContext(AuthContext);
   const [mobileOpen, setMobileOpen] = useState(false);
   const navigate = useNavigate();
 
   const toggleMobile = () => setMobileOpen((s) => !s);
+
+  const handleLogout = () => {
+    logout();
+    setMobileOpen(false);
+    navigate("/");
+  };
+
+  const handleNavigation = (path) => {
+    navigate(path);
+    setMobileOpen(false);
+  };
 
   return (
     <header className="bg-red-600 text-white">
@@ -17,18 +28,59 @@ const Navbar = () => {
         </div>
 
         {/* Desktop nav */}
-        <nav className="hidden sm:flex items-center gap-3">
-          {token ? (
+        <nav className="hidden sm:flex items-center gap-4">
+          {isAuthenticated ? (
             <>
-              <button onClick={() => navigate("/dashboard")} className="text-white text-sm hover:underline">Dashboard</button>
-              <button onClick={() => navigate("/donors")} className="text-white text-sm hover:underline">Donors</button>
-              <button onClick={() => navigate("/requests")} className="text-white text-sm hover:underline">Requests</button>
-              <button onClick={logout} className="text-white text-sm hover:underline">Logout</button>
+              <button
+                onClick={() => navigate("/dashboard")}
+                className="text-white text-sm hover:underline hover:text-red-200 transition"
+              >
+                Dashboard
+              </button>
+              <button
+                onClick={() => navigate("/donors")}
+                className="text-white text-sm hover:underline hover:text-red-200 transition"
+              >
+                Donors
+              </button>
+              <button
+                onClick={() => navigate("/requests")}
+                className="text-white text-sm hover:underline hover:text-red-200 transition"
+              >
+                Requests
+              </button>
+              {user && (
+                <span className="text-sm text-red-200">
+                  Welcome, {user.name}
+                </span>
+              )}
+              <button
+                onClick={handleLogout}
+                className="text-white text-sm hover:underline hover:text-red-200 transition"
+              >
+                Logout
+              </button>
             </>
           ) : (
             <>
-              <button onClick={() => navigate("/login")} className="text-white text-sm hover:underline">Login</button>
-              <button onClick={() => navigate("/register")} className="text-white text-sm hover:underline">Register</button>
+              <button
+                onClick={() => navigate("/")}
+                className="text-white text-sm hover:underline hover:text-red-200 transition"
+              >
+                Home
+              </button>
+              <button
+                onClick={() => navigate("/login")}
+                className="text-white text-sm hover:underline hover:text-red-200 transition"
+              >
+                Login
+              </button>
+              <button
+                onClick={() => navigate("/register")}
+                className="text-white text-sm hover:underline hover:text-red-200 transition"
+              >
+                Register
+              </button>
             </>
           )}
         </nav>
@@ -45,18 +97,59 @@ const Navbar = () => {
 
       {/* Mobile sliding menu */}
       {mobileOpen && (
-        <div className="sm:hidden bg-red-600 text-white p-3">
-          {token ? (
-            <div className="flex flex-col gap-2">
-              <button className="text-left w-full" onClick={() => { navigate('/dashboard'); setMobileOpen(false); }}>Dashboard</button>
-              <button className="text-left w-full" onClick={() => { navigate('/donors'); setMobileOpen(false); }}>Donors</button>
-              <button className="text-left w-full" onClick={() => { navigate('/requests'); setMobileOpen(false); }}>Requests</button>
-              <button className="text-left w-full" onClick={() => { logout(); setMobileOpen(false); }}>Logout</button>
+        <div className="sm:hidden bg-red-700 text-white p-4">
+          {isAuthenticated ? (
+            <div className="flex flex-col gap-3">
+              <button
+                className="text-left w-full py-2 hover:text-red-200 transition"
+                onClick={() => handleNavigation("/dashboard")}
+              >
+                Dashboard
+              </button>
+              <button
+                className="text-left w-full py-2 hover:text-red-200 transition"
+                onClick={() => handleNavigation("/donors")}
+              >
+                Donors
+              </button>
+              <button
+                className="text-left w-full py-2 hover:text-red-200 transition"
+                onClick={() => handleNavigation("/requests")}
+              >
+                Requests
+              </button>
+              {user && (
+                <div className="py-2 text-sm text-red-200 border-t border-red-600">
+                  Welcome, {user.name}
+                </div>
+              )}
+              <button
+                className="text-left w-full py-2 hover:text-red-200 transition"
+                onClick={handleLogout}
+              >
+                Logout
+              </button>
             </div>
           ) : (
-            <div className="flex flex-col gap-2">
-              <button className="text-left w-full" onClick={() => { navigate('/login'); setMobileOpen(false); }}>Login</button>
-              <button className="text-left w-full" onClick={() => { navigate('/register'); setMobileOpen(false); }}>Register</button>
+            <div className="flex flex-col gap-3">
+              <button
+                className="text-left w-full py-2 hover:text-red-200 transition"
+                onClick={() => handleNavigation("/")}
+              >
+                Home
+              </button>
+              <button
+                className="text-left w-full py-2 hover:text-red-200 transition"
+                onClick={() => handleNavigation("/login")}
+              >
+                Login
+              </button>
+              <button
+                className="text-left w-full py-2 hover:text-red-200 transition"
+                onClick={() => handleNavigation("/register")}
+              >
+                Register
+              </button>
             </div>
           )}
         </div>

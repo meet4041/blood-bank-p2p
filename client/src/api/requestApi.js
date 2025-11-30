@@ -3,50 +3,59 @@ import { BASE_URL, getAuthHeaders, handleResponse } from './apiClient';
 export const getRequests = async () => {
     const res = await fetch(`${BASE_URL}/requests`, {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+        headers: getAuthHeaders(),
     });
-    return handleResponse(res);
+    const result = await handleResponse(res);
+    
+    // Backend returns: { success: true, data: [...] }
+    // Return the full response so component can handle the structure
+    return result;
 };
 
 export const getRequestById = async (id) => {
     const res = await fetch(`${BASE_URL}/requests/${id}`, {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+        headers: getAuthHeaders(),
     });
-    return handleResponse(res);
+    const result = await handleResponse(res);
+    return result;
 };
 
 export const createRequest = async (data) => {
     const res = await fetch(`${BASE_URL}/requests`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+        headers: getAuthHeaders(),
         body: JSON.stringify(data),
     });
-    return handleResponse(res);
+    const result = await handleResponse(res);
+    return result;
 };
 
 export const updateRequest = async (id, data) => {
     const res = await fetch(`${BASE_URL}/requests/${id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+        headers: getAuthHeaders(),
         body: JSON.stringify(data),
     });
-    return handleResponse(res);
+    const result = await handleResponse(res);
+    return result;
 };
 
 export const updateStatus = async (id, data) => {
     const res = await fetch(`${BASE_URL}/requests/${id}/status`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+        headers: getAuthHeaders(),
         body: JSON.stringify(data),
     });
-    return handleResponse(res);
+    const result = await handleResponse(res);
+    return result;
 };
 
 export const deleteRequest = async (id) => {
     const res = await fetch(`${BASE_URL}/requests/${id}`, {
         method: 'DELETE',
-        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+        headers: getAuthHeaders(),
     });
-    return handleResponse(res);
+    const result = await handleResponse(res);
+    return result;
 };

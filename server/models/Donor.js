@@ -8,8 +8,18 @@ const DonorSchema = new mongoose.Schema(
     email: { type: String },
     city: { type: String },
     lastDonated: { type: Date },
+
+    addedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+
     verified: { type: Boolean, default: false },
-    addedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
+    verifiedAt: { type: Date },
+    verifiedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User", 
+      default: null
+    },
+
+    hospitalNote: { type: String }
   },
   { timestamps: true }
 );

@@ -1,27 +1,51 @@
-export const BASE_URL = "http://localhost:8000/api";
+const BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:8000/api";
 
+// Get authentication headers with JWT token
 export const getAuthHeaders = () => {
-    const token = localStorage.getItem("token");
-    return token ? { Authorization: `Bearer ${token}` } : {};
+  const token = localStorage.getItem('token');
+  const headers = {
+    'Content-Type': 'application/json'
+  };
+  
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  
+  return headers;
 };
 
-export const handleResponse = async (res) => {
-    if (res.status === 204) return null;
+export const handleResponse = async (response) => {
+  console.log("Handling response, status:", response.status);
+  
+  const text = await response.text();
+  console.log("Raw response text:", text);
+  
+  if (!text) {
+    throw new Error("Empty response from server");
+  }
 
-    const contentType = res.headers.get('content-type') || '';
-    const isJson = contentType.includes('application/json');
+  let data;
+  try {
+    data = JSON.parse(text);
+    console.log("Parsed response data:", data);
+  } catch (parseError) {
+    console.error("Failed to parse JSON response:", parseError);
+    throw new Error("Invalid JSON response from server");
+  }
 
-    const payload = isJson ? await res.json().catch(() => null) : null;
-
-    if (!res.ok) {
-        const msg = payload?.error || payload?.message || JSON.stringify(payload) || res.statusText;
-        throw new Error(msg);
+  if (!response.ok) {
+    console.error("API error response:", data);
+    // Handle different error response structures
+    if (data.error) {
+      throw new Error(data.error);
+    } else if (data.message) {
+      throw new Error(data.message);
+    } else {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
+  }
 
-    if (payload && typeof payload === 'object' && ('success' in payload)) {
-        if (!payload.success) throw new Error(payload.error || 'Request failed');
-        return payload.data;
-    }
-
-    return payload;
+  return data;
 };
+
+export { BASE_URL };

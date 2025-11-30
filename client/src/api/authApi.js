@@ -1,25 +1,72 @@
 import { BASE_URL, handleResponse } from './apiClient';
 
 export const registerUser = async (data) => {
-  const response = await fetch(`${BASE_URL}/auth/register`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
+  try {
+    console.log("Sending registration request to:", `${BASE_URL}/auth/register`);
+    console.log("Request data:", data);
+    
+    const response = await fetch(`${BASE_URL}/auth/register`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: data.name,
+        email: data.email,
+        password: data.password
+      }),
+    });
 
-  return handleResponse(response);
+    console.log("Response status:", response.status);
+    
+    const result = await handleResponse(response);
+    console.log("Raw registration response:", result);
+    
+    // Backend returns: { success: true, data: { token, user: { id, name, email, role } } }
+    if (result.success && result.data && result.data.token && result.data.user) {
+      console.log("Registration successful!");
+      // Return the nested data structure
+      return result.data; // Returns { token, user }
+    } else {
+      console.log("Unexpected response structure:", result);
+      throw new Error(result.error || 'Registration failed - unexpected response');
+    }
+    
+  } catch (error) {
+    console.error("Registration API error:", error);
+    throw new Error(error.message || 'Registration failed');
+  }
 };
 
 export const loginUser = async (data) => {
-  const response = await fetch(`${BASE_URL}/auth/login`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
+  try {
+    console.log("Sending login request to:", `${BASE_URL}/auth/login`);
+    
+    const response = await fetch(`${BASE_URL}/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
 
-  return handleResponse(response);
+    console.log("Login response status:", response.status);
+    
+    const result = await handleResponse(response);
+    console.log("Raw login response:", result);
+    
+    // Backend returns: { success: true, data: { token, user: { id, name, email, role } } }
+    if (result.success && result.data && result.data.token && result.data.user) {
+      console.log("Login successful!");
+      // Return the nested data structure
+      return result.data; // Returns { token, user }
+    } else {
+      console.log("Unexpected response structure:", result);
+      throw new Error(result.error || 'Login failed - unexpected response');
+    }
+    
+  } catch (error) {
+    console.error("Login API error:", error);
+    throw new Error(error.message || 'Login failed');
+  }
 };
