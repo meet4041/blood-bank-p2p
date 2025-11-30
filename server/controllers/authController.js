@@ -1,95 +1,96 @@
-import User from '../models/userModel.js';
-import jwt from 'jsonwebtoken';
+const User = require('../models/User');
+const jwt = require('jsonwebtoken');
+const { validationResult } = require('express-validator');
 
-// Helper function to create a token
-const generateToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET, {
-        expiresIn: '30d', // Token will be valid for 30 days
+const generateToken = (user) => {
+  return jwt.sign(
+    { id: user._id, role: user.role },
+    process.env.JWT_SECRET,
+    { expiresIn: "7d" }
+  );
+};
+
+exports.registerUser = async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ success: false, errors: errors.array() });
+    }
+
+    const { name, email, password, role } = req.body;
+
+    // FIX: Allow all roles for registration
+    const allowedRoles = ["user", "hospital", "admin"];
+    const assignedRole = allowedRoles.includes(role) ? role : "user";
+
+    const exists = await User.findOne({ email });
+    if (exists) {
+      return res.status(400).json({ success: false, error: "Email already exists" });
+    }
+
+    const user = await User.create({ name, email, password, role: assignedRole });
+    const token = generateToken(user);
+
+    res.status(201).json({
+      success: true,
+      data: {
+        token,
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role
+        }
+      }
     });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: "Server error",
+      details: err.message
+    });
+  }
 };
 
-/**
- * @desc    Register a new user
- * @route   POST /api/auth/register
- * @access  Public
- */
-export const registerUser = async (req, res) => {
-    try {
-        const { name, email, password, role, phone, city, bloodGroup, registrationID } = req.body;
-
-        // 1. Check if user already exists
-        const userExists = await User.findOne({ email });
-        if (userExists) {
-            return res.status(400).json({ message: 'User already exists' });
-        }
-
-        // 2. Create the new user
-        // Password hashing is handled by the 'pre-save' hook in your userModel
-        const user = await User.create({
-            name,
-            email,
-            password,
-            role,
-            phone,
-            city,
-            bloodGroup, // Will be null if role is 'hospital'
-            registrationID, // Will be null if role is 'donor'
-            isVerified: role === 'hospital' ? false : true, // Hospitals must be verified
-        });
-
-        // 3. Send back user data and a token
-        if (user) {
-            res.status(201).json({
-                _id: user._id,
-                name: user.name,
-                email: user.email,
-                role: user.role,
-                token: generateToken(user._id),
-            });
-        } else {
-            res.status(400).json({ message: 'Invalid user data' });
-        }
-    } catch (error) {
-        res.status(500).json({ message: `Server Error: ${error.message}` });
+exports.loginUser = async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ success: false, errors: errors.array() });
     }
-};
 
-/**
- * @desc    Authenticate/login a user
- * @route   POST /api/auth/login
- * @access  Public
- */
-export const loginUser = async (req, res) => {
-    try {
-        const { email, password } = req.body;
+    const { email, password } = req.body;
 
-        // 1. Find user by email
-        const user = await User.findOne({ email });
-
-        // 2. Check if user exists and password matches
-        // We use the comparePassword method we created in the userModel
-        if (user && (await user.comparePassword(password))) {
-            // 3. Send back user data and a token
-            res.status(200).json({
-                _id: user._id,
-                name: user.name,
-                email: user.email,
-                role: user.role,
-                token: generateToken(user._id),
-            });
-        } else {
-            res.status(401).json({ message: 'Invalid email or password' });
-        }
-    } catch (error) {
-        res.status(500).json({ message: `Server Error: ${error.message}` });
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ success: false, error: "Invalid credentials" });
     }
-};
 
-/**
- * @desc    
- * @route   
- * @access  
- */
-export const getMe = async (req, res) => {
-    res.status(200).json(req.user);
+    const isMatch = await user.matchPassword(password);
+    if (!isMatch) {
+      return res.status(400).json({ success: false, error: "Invalid credentials" });
+    }
+
+    const token = generateToken(user);
+
+    res.status(200).json({
+      success: true,
+      data: {
+        token,
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role
+        }
+      }
+    });
+
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: "Server error",
+      details: err.message
+    });
+  }
 };

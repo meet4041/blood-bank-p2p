@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <header>
+    <h1>Admin / Hospital Dashboard</h1>
+  </header>
+
+  <main>
+    <section>
+      <h2>Stats</h2>
+      <ul>
+        <li>Total Donors: <%= totalDonors %></li>
+        <li>Verified Donors: <%= verifiedDonors %></li>
+        <li>Pending Requests: <%= pendingRequests %></li>
+        <li>Fulfilled Requests: <%= fulfilledRequests %></li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>
