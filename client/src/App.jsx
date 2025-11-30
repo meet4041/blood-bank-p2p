@@ -1,9 +1,9 @@
 import React from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import { AuthProvider } from "./context/AuthContext";
 import { RadiusProvider } from "./context/RadiusContext";
-import ProtectedRoute from "./components/ProtectedRoute"; // Import the separate component
+import ProtectedRoute from "./components/ProtectedRoute"; 
 
 // Pages
 import Login from "./pages/Login";
