@@ -1,9 +1,6 @@
 const BloodRequest = require('../models/BloodRequest');
 
-/**************************************
- * CREATE BLOOD REQUEST  
- * Users & Hospitals can create  
- **************************************/
+//CREATE BLOOD REQUEST  
 exports.createBloodRequest = async (req, res) => {
   try {
     if (!["user", "hospital"].includes(req.user.role)) {
@@ -29,10 +26,7 @@ exports.createBloodRequest = async (req, res) => {
   }
 };
 
-/**************************************
- * GET ALL REQUESTS  
- * Public  
- **************************************/
+//GET ALL REQUESTS  
 exports.getAllRequests = async (req, res) => {
   try {
     const filters = {};
@@ -49,9 +43,7 @@ exports.getAllRequests = async (req, res) => {
   }
 };
 
-/**************************************
- * GET REQUEST BY ID  
- **************************************/
+//GET REQUEST BY ID  
 exports.getRequestById = async (req, res) => {
   try {
     const request = await BloodRequest.findById(req.params.id)
@@ -68,11 +60,7 @@ exports.getRequestById = async (req, res) => {
   }
 };
 
-/**************************************
- * UPDATE BLOOD REQUEST  
- * Users → only own request, cannot change status  
- * Admin / Hospital → can update any request  
- **************************************/
+//UPDATE BLOOD REQUEST  
 exports.updateBloodRequest = async (req, res) => {
   try {
     const request = await BloodRequest.findById(req.params.id);
@@ -105,10 +93,7 @@ exports.updateBloodRequest = async (req, res) => {
   }
 };
 
-/**************************************
- * PATCH BLOOD REQUEST  
- * Same rules as update  
- **************************************/
+//PATCH BLOOD REQUEST  
 exports.patchBloodRequest = async (req, res) => {
   try {
     const request = await BloodRequest.findById(req.params.id);
@@ -141,11 +126,7 @@ exports.patchBloodRequest = async (req, res) => {
   }
 };
 
-/**************************************
- * DELETE BLOOD REQUEST  
- * Users → own  
- * Admin → any  
- **************************************/
+//DELETE BLOOD REQUEST  
 exports.deleteBloodRequest = async (req, res) => {
   try {
     const request = await BloodRequest.findById(req.params.id);
@@ -170,10 +151,7 @@ exports.deleteBloodRequest = async (req, res) => {
   }
 };
 
-/**************************************
- * UPDATE STATUS  
- * Hospital / Admin Only  
- **************************************/
+//UPDATE STATUS  
 exports.updateStatus = async (req, res) => {
   try {
     if (!["hospital", "admin"].includes(req.user.role)) {

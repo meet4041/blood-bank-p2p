@@ -80,7 +80,6 @@ const Donors = () => {
                   {new Date(donor.createdAt).toLocaleDateString()}
                 </p>
 
-                {/* HOSPITAL ACTION: Verify Button */}
                 {user?.role === 'hospital' && !donor.verified && (
                   <button 
                     onClick={() => handleVerify(donor._id)}

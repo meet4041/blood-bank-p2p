@@ -94,7 +94,6 @@ const App = () => {
                 }
               />
 
-              {/* 404 */}
               <Route path="*" element={<h2 className="text-center mt-20 text-2xl font-bold">Page Not Found</h2>} />
             </Routes>
           </div>

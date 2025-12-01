@@ -16,9 +16,6 @@ const {
 
 router.get('/', getAllDonors);
 router.get('/:id', getDonorById);
-
-// CHANGE THIS LINE: Remove 'hospital', add 'user'
-// This allows Users to add donors, but stops Hospitals from doing so.
 router.post('/', authMiddleware, roleMiddleware.allowRoles('admin', 'user'), createDonor);
 
 router.put('/:id', authMiddleware, roleMiddleware.allowRoles('admin', 'hospital', 'user'), updateDonor);

@@ -1,8 +1,6 @@
 const Donor = require('../models/Donor');
 
-/**************************************
- * GET ALL DONORS (Public)
- **************************************/
+//GET ALL DONORS (Public)
 exports.getAllDonors = async (req, res) => {
   try {
     const filters = {};
@@ -18,9 +16,7 @@ exports.getAllDonors = async (req, res) => {
   }
 };
 
-/**************************************
- * GET DONOR BY ID
- **************************************/
+//GET DONOR BY ID
 exports.getDonorById = async (req, res) => {
   try {
     const donor = await Donor.findById(req.params.id)
@@ -36,11 +32,7 @@ exports.getDonorById = async (req, res) => {
   }
 };
 
-/**************************************
- * CREATE DONOR
- * Users → unverified
- * Hospital → auto-verified for self
- **************************************/
+//CREATE DONOR
 exports.createDonor = async (req, res) => {
   try {
     let verified = false;
@@ -75,12 +67,7 @@ exports.createDonor = async (req, res) => {
   }
 };
 
-/**************************************
- * UPDATE / PATCH DONOR  
- * Users → only own donors  
- * Users → cannot modify verification fields  
- * Admin / Hospital → can update all except verification  
- **************************************/
+//UPDATE / PATCH DONOR  
 const modifyDonor = async (req, res) => {
   try {
     const donor = await Donor.findById(req.params.id);
@@ -111,11 +98,7 @@ const modifyDonor = async (req, res) => {
 exports.updateDonor = modifyDonor;
 exports.patchDonor = modifyDonor;
 
-/**************************************
- * DELETE DONOR  
- * User → can delete only own donors  
- * Admin / Hospital → can delete any donor  
- **************************************/
+//DELETE DONOR  
 exports.deleteDonor = async (req, res) => {
   try {
     const donor = await Donor.findById(req.params.id);
@@ -135,10 +118,7 @@ exports.deleteDonor = async (req, res) => {
   }
 };
 
-/**************************************
- * VERIFY DONOR  
- * Only Hospital / Admin  
- **************************************/
+//VERIFY DONOR  
 exports.verifyDonor = async (req, res) => {
   try {
     if (!["hospital", "admin"].includes(req.user.role)) {
